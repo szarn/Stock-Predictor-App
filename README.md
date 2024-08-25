@@ -16,3 +16,7 @@ Select a stock (AAPL, GOOGL, TSLA) from the dropdown menu, and choose the number
 
 Process behind the Modeling: 
 SML and Nvidia were chosen as regressors for the stock prediction model due to their significant roles in the semiconductor industry, which directly impacts the tech companies being analyzed. ASML is a leading manufacturer of photolithography machines essential for producing advanced semiconductor chips, while Nvidia designs GPUs that drive innovations in AI, gaming, and data centers. The performance of semiconductor companies like ASML and Nvidia often correlates with broader tech market trends, as their products are integral to the supply chain and technological advancements.
+
+Model Accuracy:
+
+Data Collected:
