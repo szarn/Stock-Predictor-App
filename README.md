@@ -1,5 +1,4 @@
-"# Stock-Predictor-App" 
-# Stock-Predictor
+# Stock-Predictor App
 A Streamlit app for predicting tech company stock prices using historical data and Prophet forecasting with NVDA and ASML as regressors.
 
 This repository contains a Streamlit web application that predicts the future stock prices of major tech companies like Apple (AAPL), Google (GOOGL), and Tesla (TSLA) using historical data and machine learning techniques. The app utilizes the Prophet forecasting model to provide stock price predictions for up to five years. Additionally, it includes NVDA and ASML as regressors to enhance the accuracy of the predictions
