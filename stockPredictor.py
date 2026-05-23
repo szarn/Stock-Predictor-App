@@ -27,11 +27,10 @@ period = n_years * 365
 @st.cache_data
 def load_data(ticker):
     data = yf.download(ticker, START, TODAY)
+    data.index.name = 'Date'
+    data = data.reset_index()
     data.columns = data.columns.droplevel(1)
     data.columns.name = None
-    data = data.reset_index()
-    if 'Datetime' in data.columns:
-        data = data.rename(columns={'Datetime': 'Date'})
     return data
 
 with st.spinner("Loading data..."):
@@ -45,11 +44,10 @@ def load_regressor_data(tickers):
     data = {}
     for ticker in tickers:
         ticker_data = yf.download(ticker, START, TODAY)
+        ticker_data.index.name = 'Date'
+        ticker_data = ticker_data.reset_index()
         ticker_data.columns = ticker_data.columns.droplevel(1)
         ticker_data.columns.name = None
-        ticker_data = ticker_data.reset_index()
-        if 'Datetime' in ticker_data.columns:
-            ticker_data = ticker_data.rename(columns={'Datetime': 'Date'})
         data[ticker] = ticker_data[['Date', 'Close']].rename(columns={"Close": ticker})
     return data
 
