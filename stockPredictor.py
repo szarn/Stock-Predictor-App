@@ -24,15 +24,18 @@ n_years = st.slider("Years of prediction:", 1 , 5)
 period = n_years * 365
 
 # Load data onto Website
-#@st.cache_data
+@st.cache_data
 def load_data(ticker):
     data = yf.download(ticker, START, TODAY)
-    data.reset_index(inplace=True)
+    data.columns = data.columns.droplevel(1)
+    data.columns.name = None
+    data = data.reset_index()
+    if 'Datetime' in data.columns:
+        data = data.rename(columns={'Datetime': 'Date'})
     return data
 
-data_load_state = st.text("Load Data...")
-data = load_data(selected_stock)
-data_load_state.text("Loading Data...Done!")
+with st.spinner("Loading data..."):
+    data = load_data(selected_stock)
 
 st.subheader('Raw Data')
 st.write(data.tail())
@@ -42,7 +45,11 @@ def load_regressor_data(tickers):
     data = {}
     for ticker in tickers:
         ticker_data = yf.download(ticker, START, TODAY)
-        ticker_data.reset_index(inplace=True)
+        ticker_data.columns = ticker_data.columns.droplevel(1)
+        ticker_data.columns.name = None
+        ticker_data = ticker_data.reset_index()
+        if 'Datetime' in ticker_data.columns:
+            ticker_data = ticker_data.rename(columns={'Datetime': 'Date'})
         data[ticker] = ticker_data[['Date', 'Close']].rename(columns={"Close": ticker})
     return data
 
@@ -53,6 +60,7 @@ regressor_data = load_regressor_data(regressors)
 # Merge with main data
 for ticker in regressors:
     data = pd.merge(data, regressor_data[ticker], on='Date', how='left')
+data = data.ffill().dropna()
 
 
 # Plotting
@@ -62,7 +70,7 @@ def plot_raw_data():
     fig.add_trace(go.Scatter(x=data['Date'], y=data['ASML'], name='ASML', line=dict(color='red')))
     fig.add_trace(go.Scatter(x=data['Date'], y=data['NVDA'], name='NVDA', line=dict(color='purple')))
 
-    fig.layout.update(title_text="Time Series Data", xaxis_rangeslider_visible=True)
+    fig.update_layout(title_text="Time Series Data", xaxis_rangeslider_visible=True)
     st.plotly_chart(fig)
 
 plot_raw_data()
@@ -71,7 +79,7 @@ plot_raw_data()
 
 
 # Forecasting
-df_train = data[['Date', 'Close'] + regressors]
+df_train = data[['Date', 'Close'] + regressors].copy()
 df_train.columns = ['ds', 'y'] + regressors
 df_train['ds'] = pd.to_datetime(df_train['ds'])
 
