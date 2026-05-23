@@ -87,7 +87,8 @@ for regressor in regressors:
 m.fit(df_train)
 future = m.make_future_dataframe(periods=period)
 for regressor in regressors:
-    future[regressor] = df_train[regressor].iloc[-1]  # Extend the regressor values
+    regressor_map = df_train.set_index('ds')[regressor]
+    future[regressor] = future['ds'].map(regressor_map).fillna(df_train[regressor].iloc[-1])
 
 
 forecast = m.predict(future)
