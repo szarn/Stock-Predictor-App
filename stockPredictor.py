@@ -20,9 +20,6 @@ st.markdown("<h3 style='text-align: center; color: gray;'>Using NVDA & ASML as R
 stocks = ("AAPL", "GOOGL", "TSLA")
 selected_stock = st.selectbox("Select dataset for prediction", stocks)
 
-n_years = st.slider("Years of prediction:", 1 , 5)
-period = n_years * 365
-
 # Load data onto Website
 @st.cache_data
 def load_data(ticker):
@@ -77,6 +74,9 @@ plot_raw_data()
 
 
 # Forecasting
+n_years = st.slider("Years of prediction:", 1, 5)
+period = n_years * 365
+
 df_train = data[['Date', 'Close'] + regressors].copy()
 df_train.columns = ['ds', 'y'] + regressors
 df_train['ds'] = pd.to_datetime(df_train['ds'])
